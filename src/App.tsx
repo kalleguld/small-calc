@@ -1,17 +1,8 @@
 import React, { useReducer } from 'react';
 import './App.css';
-import { NumInput, Prop, Radio } from '@kalleguld/react-props';
+import { ReducerInput, State } from './Types';
+import { Row } from './Row';
 
-type VarType = 'w'|'v'|'a';
-interface State {
-  w:number;
-  v:number;
-  a:number;
-  target:VarType;
-};
-type ValSetter = ['set', VarType, number];
-type TargetSetter = ['target', VarType];
-type ReducerInput = ValSetter|TargetSetter;
 
 function reducer(state: State, action: ReducerInput): State{
   let result = {...state};
@@ -49,17 +40,6 @@ function App() {
     target:'w'
   });
 
-  const choice: Prop<VarType> = {
-    value: state.target,
-    set: c => updateState(['target', c])
-  };
-
-  const val: ((vt: VarType) => Prop<number>) = (vt: VarType) => {
-    return {
-      value: state[vt],
-      set: (n) => updateState(['set', vt, n])
-    }
-  }
   
   return (
     <div className="App">
@@ -67,41 +47,10 @@ function App() {
         
       <table>
         <tbody>
-          <tr>
-            <td>
-              <label htmlFor='r-w'>Watts</label>
-            </td>
-            <td>
-              <Radio id='r-w' value='w' prop={choice} />
-            </td>
-            <td>
-              <NumInput prop={val('w')} disabled={state.target === 'w'} />
-            </td>
-          </tr>
+          <Row name='Watts' varType='w' state={state} updateState={updateState} />
+          <Row name='Volts' varType='v' state={state} updateState={updateState} />
+          <Row name='Amps' varType='a' state={state} updateState={updateState} />
           
-          <tr>
-            <td>
-              <label htmlFor='r-v'>Volts</label>
-            </td>
-            <td>
-              <Radio id='r-v' value='v' prop={choice} />
-            </td>
-            <td>
-              <NumInput prop={val('v')} disabled={state.target === 'v'} />
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-              <label htmlFor='r-a'>Amps</label>
-            </td>
-            <td>
-              <Radio id='r-a' value='a' prop={choice} />
-            </td>
-            <td>
-              <NumInput prop={val('a')} disabled={state.target === 'a'} />
-            </td>
-          </tr>
         </tbody>
       </table>
       </header>
